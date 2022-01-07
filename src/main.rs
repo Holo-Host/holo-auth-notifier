@@ -4,6 +4,7 @@ use hpos_config_core::{public_key, Config};
 use lazy_static::*;
 use reqwest::Client;
 use serde::*;
+use std::path::Path;
 use std::time::Duration;
 use std::{env, fs, fs::File, thread};
 use tracing::*;
@@ -101,21 +102,23 @@ async fn main() -> Fallible<()> {
         .with_env_filter(EnvFilter::from_default_env())
         .finish();
     tracing::subscriber::set_global_default(subscriber)?;
+    if Path::new(&zt_auth_done_notification_path()).exists() {
+        let config = get_hpos_config()?;
+        let password = device_bundle_password();
+        let holochain_public_key =
+            hpos_config_seed_bundle_explorer::holoport_public_key(&config, password).await?;
 
-    let config = get_hpos_config()?;
-    let password = device_bundle_password();
-    let holochain_public_key =
-        hpos_config_seed_bundle_explorer::holoport_public_key(&config, password).await?;
+        // trying to connect to holoport admin portal
+        retry_holoport_url(holochain_public_key).await;
 
-    // trying to connect to holoport admin portal
-    retry_holoport_url(holochain_public_key).await;
-    // send successful email once we get a successful response from the holoport admin portal
-    let email = match config {
-        Config::V1 { settings, .. } | Config::V2 { settings, .. } => settings.admin.email,
-    };
-
-    send_success_email(email.clone(), get_holoport_url(holochain_public_key)).await?;
-    File::create(zt_auth_done_notification_path())?;
+        let email = match config {
+            Config::V1 { settings, .. } | Config::V2 { settings, .. } => settings.admin.email,
+        };
+        // send successful email once we get a successful response from the holoport admin portal
+        send_success_email(email.clone(), get_holoport_url(holochain_public_key)).await?;
+        // Create a notification file that will be used by the LED notifier
+        File::create(zt_auth_done_notification_path())?;
+    }
 
     Ok(())
 }
