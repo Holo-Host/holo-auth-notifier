@@ -20,10 +20,10 @@ fn get_holoport_url(id: PublicKey) -> String {
     format!("https://{}.holohost.net", public_key::to_base36_id(&id))
 }
 
-fn zt_auth_done_notification_path() -> String {
-    match env::var("LED_NOTIFICATIONS_PATH") {
+fn tls_set_notification_path() -> String {
+    match env::var("TLS_NOTIFICATIONS_PATH") {
         Ok(path) => path,
-        _ => "/var/lib/configure-holochain/zt-auth-done-notification".to_string(),
+        _ => "/var/lib/configure-holochain/tls-set-notification".to_string(),
     }
 }
 
@@ -103,8 +103,7 @@ async fn main() -> Fallible<()> {
         .finish();
     tracing::subscriber::set_global_default(subscriber)?;
     debug!("Starting holo-auth-notifier...");
-    debug!("Checking path {:?}...", zt_auth_done_notification_path());
-    if !Path::new(&zt_auth_done_notification_path()).exists() {
+    if !Path::new(&tls_set_notification_path()).exists() {
         debug!("Updating notification state...");
         let config = get_hpos_config()?;
         let password = device_bundle_password();
@@ -120,7 +119,7 @@ async fn main() -> Fallible<()> {
         // send successful email once we get a successful response from the holoport admin portal
         send_success_email(email.clone(), get_holoport_url(holochain_public_key)).await?;
         // Create a notification file that will be used by the LED notifier
-        File::create(zt_auth_done_notification_path())?;
+        File::create(tls_set_notification_path())?;
     }
     debug!("done...");
     Ok(())
