@@ -98,13 +98,14 @@ async fn send_success_email(email: String, data: String) -> Fallible<()> {
 
 #[tokio::main]
 async fn main() -> Fallible<()> {
-    info!("Starting holo-auth-notifier...");
     let subscriber = FmtSubscriber::builder()
         .with_env_filter(EnvFilter::from_default_env())
         .finish();
     tracing::subscriber::set_global_default(subscriber)?;
-    if Path::new(&zt_auth_done_notification_path()).exists() {
-        info!("Updating notification state...");
+    debug!("Starting holo-auth-notifier...");
+    debug!("Checking path {:?}...", zt_auth_done_notification_path());
+    if !Path::new(&zt_auth_done_notification_path()).exists() {
+        debug!("Updating notification state...");
         let config = get_hpos_config()?;
         let password = device_bundle_password();
         let holochain_public_key =
@@ -121,6 +122,6 @@ async fn main() -> Fallible<()> {
         // Create a notification file that will be used by the LED notifier
         File::create(zt_auth_done_notification_path())?;
     }
-    info!("done...");
+    debug!("done...");
     Ok(())
 }
