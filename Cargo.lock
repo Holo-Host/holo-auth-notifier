@@ -512,7 +512,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "holo-auth-client"
+name = "holo-auth-notifier"
 version = "0.0.1"
 dependencies = [
  "ed25519-dalek",

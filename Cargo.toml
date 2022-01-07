@@ -1,5 +1,5 @@
 [package]
-name = "holo-auth-client"
+name = "holo-auth-notifier"
 edition = "2018"
 version = "0.0.1"
 
