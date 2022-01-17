@@ -78,7 +78,7 @@ async fn retry_holoport_url(id: PublicKey) -> () {
         info!("Trying to connect to url: {}", url);
         if let Ok(resp) = CLIENT
             .get(url.clone())
-            .timeout(std::time::Duration::from_millis(2000))
+            .timeout(std::time::Duration::from_millis(30000))
             .send()
             .await
         {
