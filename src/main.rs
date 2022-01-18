@@ -27,6 +27,13 @@ fn tls_set_notification_path() -> String {
     }
 }
 
+fn mem_proof_path() -> String {
+    match env::var("MEM_PROOF_PATH") {
+        Ok(path) => path,
+        _ => "/var/lib/configure-holochain/mem-proof".to_string(),
+    }
+}
+
 fn device_bundle_password() -> Option<String> {
     match env::var("DEVICE_BUNDLE_PASSWORD") {
         Ok(pass) => Some(pass),
@@ -103,7 +110,7 @@ async fn main() -> Fallible<()> {
         .finish();
     tracing::subscriber::set_global_default(subscriber)?;
     debug!("Starting holo-auth-notifier...");
-    if !Path::new(&tls_set_notification_path()).exists() {
+    if !Path::new(&tls_set_notification_path()).exists() && Path::new(&mem_proof_path()).exists() {
         debug!("Updating notification state...");
         let config = get_hpos_config()?;
         let password = device_bundle_password();
