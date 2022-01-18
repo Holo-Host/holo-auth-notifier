@@ -110,7 +110,7 @@ async fn main() -> Fallible<()> {
         .finish();
     tracing::subscriber::set_global_default(subscriber)?;
     debug!("Starting holo-auth-notifier...");
-    if !Path::new(&tls_set_notification_path()).exists() && !Path::new(&mem_proof_path()).exists() {
+    if !Path::new(&tls_set_notification_path()).exists() && Path::new(&mem_proof_path()).exists() {
         debug!("Updating notification state...");
         let config = get_hpos_config()?;
         let password = device_bundle_password();
