@@ -23,7 +23,7 @@ fn get_holoport_url(id: PublicKey) -> String {
 fn tls_set_notification_path() -> String {
     match env::var("TLS_NOTIFICATIONS_PATH") {
         Ok(path) => path,
-        _ => "/var/lib/configure-holochain/tls-set-notification".to_string(),
+        _ => "/var/lib/holo-auth/tls-set-notification".to_string(),
     }
 }
 
