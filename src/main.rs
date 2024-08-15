@@ -1,4 +1,4 @@
-use ed25519_dalek::*;
+use ed25519_dalek::VerifyingKey;
 use failure::*;
 use hpos_config_core::{public_key, Config};
 use lazy_static::*;
@@ -11,7 +11,7 @@ use tracing::*;
 use tracing_subscriber::{EnvFilter, FmtSubscriber};
 use uuid::Uuid;
 
-fn get_holoport_url(id: PublicKey) -> String {
+fn get_holoport_url(id: VerifyingKey) -> String {
     if let Ok(network) = env::var("HOLO_NETWORK") {
         if network == "devNet" {
             return format!("https://{}.holohost.dev", public_key::to_base36_id(&id));
@@ -78,7 +78,7 @@ async fn send_email(email: String, data: String, success: bool) -> Fallible<()> 
     Ok(())
 }
 
-async fn retry_holoport_url(id: PublicKey) -> () {
+async fn retry_holoport_url(id: VerifyingKey) -> () {
     let url = get_holoport_url(id);
     let backoff = Duration::from_secs(5);
     loop {
@@ -121,7 +121,9 @@ async fn main() -> Fallible<()> {
         retry_holoport_url(holochain_public_key).await;
 
         let email = match config {
-            Config::V1 { settings, .. } | Config::V2 { settings, .. } => settings.admin.email,
+            Config::V1 { settings, .. }
+            | Config::V2 { settings, .. }
+            | Config::V3 { settings, .. } => settings.admin.email,
         };
         // send successful email once we get a successful response from the holoport admin portal
         send_success_email(email.clone(), get_holoport_url(holochain_public_key)).await?;

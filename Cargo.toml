@@ -4,7 +4,8 @@ edition = "2021"
 version = "0.1.0"
 
 [dependencies]
-ed25519-dalek = { version = "1.0.1", features = ["serde"] }
+#ed25519-dalek = { version = "1.0.1", features = ["serde"] }
+ed25519-dalek = { version = "2.1.1", features = ["serde"] }
 failure = "0.1"
 lazy_static = "1"
 reqwest = { version = "0.11.6", features = ["json"] }
@@ -15,11 +16,12 @@ tracing = "0.1"
 tracing-futures = "0.2"
 tracing-subscriber = "0.2"
 uuid = { version = "0.8", features = ["serde", "v4"] }
+num_cpus = "=1.16.0"
 
 [dependencies.hpos-config-core]
 git = "https://github.com/Holo-Host/hpos-config"
-rev = "8c0f5a011bd2d7138e49bd6393cacfb8be2be23b"
+rev = "c17067b6a4214f9646316fa681651b73c72bf7e1"
 
 [dependencies.hpos-config-seed-bundle-explorer]
 git = "https://github.com/Holo-Host/hpos-config"
-rev = "8c0f5a011bd2d7138e49bd6393cacfb8be2be23b"
+rev = "c17067b6a4214f9646316fa681651b73c72bf7e1"
