@@ -4,7 +4,6 @@ edition = "2021"
 version = "0.1.0"
 
 [dependencies]
-#ed25519-dalek = { version = "1.0.1", features = ["serde"] }
 ed25519-dalek = { version = "2.1.1", features = ["serde"] }
 failure = "0.1"
 lazy_static = "1"
