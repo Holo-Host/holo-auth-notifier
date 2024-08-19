@@ -120,13 +120,8 @@ async fn main() -> Fallible<()> {
         // trying to connect to holoport admin portal
         retry_holoport_url(holochain_public_key).await;
 
-        let email = match config {
-            Config::V1 { settings, .. }
-            | Config::V2 { settings, .. }
-            | Config::V3 { settings, .. } => settings.admin.email,
-        };
         // send successful email once we get a successful response from the holoport admin portal
-        send_success_email(email.clone(), get_holoport_url(holochain_public_key)).await?;
+        send_success_email(config.email(), get_holoport_url(holochain_public_key)).await?;
         // Create a notification file that will be used by the LED notifier
         File::create(tls_set_notification_path())?;
     }
